@@ -18,15 +18,12 @@ void removeLeftRecursion()
     {
         char *A = nts[k];
 
-        // Step 1: does this non-terminal have a left-recursive production?
-        int hasLR = 0;
-        for (int i = 0; i < oldN; i++)
-            if (strcmp(lhs[i], A) == 0 && strcmp(rhs[i][0], A) == 0)
-                hasLR = 1;
-
+        int hasLR=0;
+        for (int i=0; i< oldN; i++)
+            if(strcmp(lhs[i], A)==0 && strcmp(rhs[i][0], A)==0)
+                hasLR=1;
         if (!hasLR) continue;              // nothing to fix for this one
 
-        // Step 2: make the new non-terminal name A'
         char newNT[20];
         strcpy(newNT, A);
         strcat(newNT, "'");
@@ -36,22 +33,21 @@ void removeLeftRecursion()
         {
             if (strcmp(lhs[i], A) != 0) continue;
 
-            if (strcmp(rhs[i][0], A) == 0)
+            if (strcmp(rhs[i][0], A) ==0)
             {
                 // A -> A x   becomes   A' -> x A'
-                for (int j = 1; j < rhs_len[i]; j++)      // drop the first symbol (A)
-                    strcpy(rhs[i][j - 1], rhs[i][j]);
+               for(int j=1; j<rhs_len[i]; j++) 
+                    strcpy(rhs[i][j-1], rhs[i][j]);
                 rhs_len[i]--;
-                strcpy(rhs[i][rhs_len[i]++], newNT);      // add A' at the end
-                strcpy(lhs[i], newNT);                    // change left side to A'
+                strcpy(lhs[i], newNT);
+                strcpy(rhs[i][rhs_len[i]++], newNT);            
             }
             else
             {
-                // A -> b   becomes   A -> b A'
                 if (strcmp(rhs[i][0], "#") == 0)
                     strcpy(rhs[i][0], newNT);             // A -> #  becomes  A -> A'
                 else
-                    strcpy(rhs[i][rhs_len[i]++], newNT);
+                    strcpy(rhs[i][rhs_len[i]++], newNT);   // A -> b   becomes   A -> b A'
             }
         }
 
@@ -81,12 +77,11 @@ int parse(char pending[][20], int cnt)
             int m = 0;
             for (int j = 0; j < rhs_len[i]; j++)      // production body first
                 strcpy(next[m++], rhs[i][j]);
-            for (int j = 1; j < cnt; j++)             // then the remaining pending symbols
+            for (int j = 1; j < cnt; j++)             
                 strcpy(next[m++], pending[j]);
-
             int save = ip;
             if (parse(next, m)) return 1;
-            ip = save;                                // backtrack
+            ip=save;
         }
         return 0;
     }
@@ -189,4 +184,16 @@ A' -> #
 
 String: acxxxxx  -> String is accepted
 String: acxxy    -> String is rejected (no segmentation fault)
+
+
+
+
+S -> AAAS
+S -> SA
+S -> b
+A -> a
+
+
+
+
 */

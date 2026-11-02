@@ -15,48 +15,49 @@ int top = 0;
 // Reads one token from s starting at pos, returns its length
 int getToken(char *s, int pos, char *tok)
 {
-    char *words[] = {"id", "then", "else", "if"};
-    for (int k = 0; k < 4; k++)
+    char *words[] = {"id", "then", "else", "if", "num","=",","};
+    for (int k = 0; k < 7; k++)
     {
         int l = strlen(words[k]);
-        if (strncmp(&s[pos], words[k], l) == 0)
+        if(strncmp(&s[pos], words[k], l) == 0)
+
         {
             strcpy(tok, words[k]);
             return l;
         }
     }
-    tok[0] = s[pos];                     // any other symbol is a single character
-    tok[1] = '\0';
-    if (isupper(s[pos]) && s[pos + 1] == '\'')   // non-terminal like E'
+    tok[0]=s[pos];
+    tok[1]='\0';
+    if(isupper(s[pos]) && s[pos + 1]== '\'')
     {
-        tok[1] = '\'';
-        tok[2] = '\0';
+        tok[0] = s[pos];
+        tok[1]='\'';
+        tok[2]='\0';
         return 2;
     }
+    
     return 1;
 }
 
-// Try to reduce the top of the stack. Returns 1 if a reduction was done.
+// Try to reduce the top of the stack. Returns 1 if a reduction was done          // stack too small
 int tryReduce()
 {
-    int best = -1;
-
-    for (int i = 0; i < n; i++)
+    int best=-1;
+    for(int i =0; i<n;i++)
     {
-        if (strcmp(rhs[i][0], "#") == 0) continue;   // skip epsilon productions
-        if (rhs_len[i] > top) continue;              // stack too small
+        if(strcmp(rhs[i][0], "#")==0) continue;
+        if(rhs_len[i]>top) continue;
 
-        int match = 1;
-        for (int j = 0; j < rhs_len[i]; j++)
-            if (strcmp(stack[top - rhs_len[i] + j], rhs[i][j]) != 0)
+        int match =1;
+        for(int j=0; j<rhs_len[i]; j++)
+            if(strcmp(stack[top - rhs_len[i]+j], rhs[i][j]) != 0)
             {
-                match = 0;
+                match =0;
                 break;
             }
-
-        // choose the longest matching right side
-        if (match && (best == -1 || rhs_len[i] > rhs_len[best]))
-            best = i;
+        
+        if(match && (best ==-1 || rhs_len[i] > rhs_len[best]))
+            best =i;
     }
 
     if (best == -1) return 0;
@@ -120,4 +121,23 @@ E -> id
 
 String: id+id*id   ->  String is accepted
 String: id+*id     ->  String is rejected
+
+
+
+
+
+S -> ifCthenA
+C -> else
+A -> id=num
+
+ifelsethenid=num
+
+
+
+
+S -> id(L)
+L -> id,L
+L -> id
+
+id(id,id,id)
 */
