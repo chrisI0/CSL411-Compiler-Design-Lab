@@ -47,12 +47,13 @@ int main() {
     for (i = 0; post[i] != '\0'; i++) {
         if (post[i] == ' ')
             continue;
-        if (isalnum(post[i])) {
-            int k = 0;
+        if (isalnum(post[i])){
+            int k=0;
             ++sp;
             while (isalnum(post[i]))
-                st[sp][k++] = post[i++];
-            st[sp][k] = '\0';
+                st[sp][k++]=post[i++];
+            st[sp][k]='\0';
+        
         } else {
             char *b = st[sp--];
             char *a = st[sp--];

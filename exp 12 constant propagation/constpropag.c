@@ -9,7 +9,7 @@ int main() {
     char lhs, rhs[50], out[100];
 
     printf("Enter number of statements: ");
-    scanf("%d", &n);
+    scanf("%d", &n) ;
 
     printf("Enter statements (like a = 10):\n");
     for (i = 0; i < n; i++) {
